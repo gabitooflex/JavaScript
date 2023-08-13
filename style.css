@@ -1,0 +1,45 @@
+*{
+    margin: 0;
+    
+}
+body{
+    font-family: 'Roboto', sans-serif;
+}
+
+#bienvenida {
+    font-size: 18px; 
+}
+
+#registro{
+    display: none;
+    font-size: 18px;
+}
+
+.elementosRegistro{
+    display: flex;
+    align-items: center;
+    justify-content: center;  
+}
+.hero{
+    background-color: rgb(132, 155, 217);
+    color: rgb(255, 255, 255);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+    font-size: 25px;
+    height: 120px;
+    text-shadow: rgb(44, 44, 44) 0.1em 0.1em 0.2em;
+}
+
+#listaDeudores{
+    text-align: center;
+    margin-top: 40px;
+    list-style-type: none;
+}
+button{
+    margin-left: 8px;
+}
+input{
+    margin: 15px;
+}

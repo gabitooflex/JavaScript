@@ -1,12 +1,40 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <title>Registro de Deudores</title>
 </head>
 <body>
-    <h1>Primera Pre Entrega Gabriel Rodriguez</h1>
+    <div id="bienvenida">
+        <div class="hero">
+            <h2>Bienvenido al Registro de Deudores</h2>
+        </div>
+            <div class="elementosRegistro">
+            <label for="nombreUsuario">Ingresa tu nombre :</label>
+            <input type="text" id="nombreUsuario">
+            <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+            <input type="date" id="fechaNacimiento">
+            <button id="iniciar">Continuar</button>
+        </div>
+    </div>
+    <div id="registro">
+        <div class="hero">
+            <h1>Registro de Deudores</h1>
+        </div>
+        <div class="elementosRegistro">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre">
+            <label for="edad">Edad:</label>
+            <input type="number" id="edad">
+            <label for="monto">Monto:</label>
+            <input type="number" id="monto">
+            <button id="agregar">Agregar Deudor</button>
+        </div>
+        <ul id="listaDeudores"></ul>
+    </div>
 
-    <script src="./index.js"></script>
+    <script src="index.js"></script>
 </body>
 </html>
