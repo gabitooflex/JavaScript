@@ -3,7 +3,7 @@
     
 }
 body{
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif !important;
 }
 
 #bienvenida {
@@ -18,7 +18,18 @@ body{
 .elementosRegistro{
     display: flex;
     align-items: center;
-    justify-content: center;  
+    justify-content: center;
+}
+.mailPassword{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btncontinuar{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 40px;
 }
 .hero{
     background-color: rgb(132, 155, 217);
