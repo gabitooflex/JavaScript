@@ -1,5 +1,5 @@
-let usuarioIniciado = false;
 let editingIndex = -1;
+let deudores = [];
 
 window.addEventListener('load', () => {
     Swal.fire({
@@ -7,97 +7,48 @@ window.addEventListener('load', () => {
         text: 'A continuación, le pediremos algunos datos.',
         icon: 'info',
     });
+    cargarDeudores();
+    mostrarDeudores();
 });
 
-function mostrarFormulario() {
-    Swal.fire({
-        title: 'Bienvenido!' ,
-        icon: 'info',
-    });
-    document.getElementById('bienvenida').style.display = 'none';
-    document.getElementById('registro').style.display = 'block';
+function cargarDeudores() {
+    const deudoresGuardados = JSON.parse(localStorage.getItem('deudores'));
+    if (deudoresGuardados) {
+        deudores = deudoresGuardados;
+    }
 }
 
-document.getElementById('iniciar').addEventListener('click', () => {
-    const nombreUsuario = document.getElementById('nombreUsuario').value;
-    const fechaNacimiento = document.getElementById('fechaNacimiento').value;
-    const email = document.getElementById('email').value; 
-    const contrasena = document.getElementById('contrasena').value; 
-
-    if (nombreUsuario && fechaNacimiento && email && contrasena) {
-        const today = new Date();
-        const birthDate = new Date(fechaNacimiento);
-        const age = today.getFullYear() - birthDate.getFullYear();
-
-        if (age >= 18) {
-            if (contrasena.length >= 10) {
-                if (email.includes('@')) {
-                    usuarioIniciado = true;
-                    mostrarFormulario();
-                    mostrarDeudores();
-                } else {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'El correo electrónico no es válido. Debe contener "@".',
-                        icon: 'error',
-                    });
-                }
-            } else {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'La contraseña debe tener al menos 10 caracteres.',
-                    icon: 'error',
-                });
-            }
-        } else {
-            Swal.fire({
-                title: 'Error',
-                text: 'Debes tener al menos 18 años para usar esta aplicación.',
-                icon: 'error',
-            });
-        }
-    } else {
-        Swal.fire({
-            title: 'Error',
-            text: 'Por favor, completa todos los campos.',
-            icon: 'error',
-        });
-    }
-});
-
-
-function verificarAcceso() {
-    if (!usuarioIniciado) {
-        Swal.fire({
-            title: 'Acceso denegado',
-            text: 'Por favor, inicia sesión para continuar.',
-            icon: 'error',
-        });
-        return false;
-    }
-    return true;
-}
-
-
-// Agregar un nuevo deudor al registro
-function agregarDeudor(nombre, edad, monto) {
-    const deudor = { nombre, edad, monto };
-    const deudores = JSON.parse(localStorage.getItem('deudores')) || [];
+function agregarDeudor(nombre, edad, monto, fechaVencimiento) {
+    const deudor = { nombre, edad, monto, fechaVencimiento };
     deudores.push(deudor);
-    localStorage.setItem('deudores', JSON.stringify(deudores));
+    guardarDeudores();
     mostrarDeudores();
 }
 
-// Mostrar la lista de deudores 
+function guardarDeudores() {
+    localStorage.setItem('deudores', JSON.stringify(deudores));
+}
+
 function mostrarDeudores() {
-    const listaDeudores = document.getElementById('listaDeudores');
+    const listaDeudores = document.getElementById('cuerpoTabla');
     listaDeudores.innerHTML = '';
 
-    const deudores = JSON.parse(localStorage.getItem('deudores')) || [];
     deudores.forEach((deudor, index) => {
-        const li = document.createElement('li');
-        li.textContent = `${deudor.nombre}, ${deudor.edad} años: $${deudor.monto}`;
+        const tr = document.createElement('tr');
 
+        const tdNombre = document.createElement('td');
+        tdNombre.textContent = deudor.nombre;
+
+        const tdEdad = document.createElement('td');
+        tdEdad.textContent = deudor.edad;
+
+        const tdMonto = document.createElement('td');
+        tdMonto.textContent = deudor.monto;
+
+        const tdFechaVencimiento = document.createElement('td');
+        tdFechaVencimiento.textContent = deudor.fechaVencimiento;
+
+        const tdAcciones = document.createElement('td');
         const botonEditar = document.createElement('button');
         botonEditar.textContent = 'Editar';
         botonEditar.addEventListener('click', () => {
@@ -110,43 +61,49 @@ function mostrarDeudores() {
             eliminarDeudor(index);
         });
 
-        li.appendChild(botonEditar);
-        li.appendChild(botonEliminar);
-        listaDeudores.appendChild(li);
+        tdAcciones.appendChild(botonEditar);
+        tdAcciones.appendChild(botonEliminar);
+
+        tr.appendChild(tdNombre);
+        tr.appendChild(tdEdad);
+        tr.appendChild(tdMonto);
+        tr.appendChild(tdFechaVencimiento);
+        tr.appendChild(tdAcciones);
+
+        listaDeudores.appendChild(tr);
     });
+
+    const tablaDeudores = document.getElementById('tablaDeudores');
+    tablaDeudores.style.display = deudores.length > 0 ? 'block' : 'none';
 }
 
-// Editar un deudor
 function editarDeudor(index) {
-    const deudores = JSON.parse(localStorage.getItem('deudores')) || [];
     const deudor = deudores[index];
 
     document.getElementById('nombre').value = deudor.nombre;
     document.getElementById('edad').value = deudor.edad;
     document.getElementById('monto').value = deudor.monto;
+    document.getElementById('fechaVencimiento').value = deudor.fechaVencimiento;
 
     editingIndex = index;
     document.getElementById('agregar').textContent = 'Guardar Cambios';
 }
 
-// Guardar cambios de edición
-function guardarCambios(nombre, edad, monto) {
+function guardarCambios(nombre, edad, monto, fechaVencimiento) {
     if (editingIndex !== -1) {
-        const deudores = JSON.parse(localStorage.getItem('deudores')) || [];
-        const deudor = { nombre, edad, monto };
+        const deudor = { nombre, edad, monto, fechaVencimiento };
         deudores[editingIndex] = deudor;
-        localStorage.setItem('deudores', JSON.stringify(deudores));
         document.getElementById('agregar').textContent = 'Agregar Deudor';
         document.getElementById('nombre').value = '';
         document.getElementById('edad').value = '';
         document.getElementById('monto').value = '';
+        document.getElementById('fechaVencimiento').value = '';
 
         editingIndex = -1;
         mostrarDeudores();
     }
 }
 
-// Eliminar un deudor
 function eliminarDeudor(index) {
     Swal.fire({
         title: '¿Está seguro que desea eliminar a este deudor?',
@@ -156,9 +113,8 @@ function eliminarDeudor(index) {
         cancelButtonText: 'Cancelar',
     }).then((result) => {
         if (result.isConfirmed) {
-            const deudores = JSON.parse(localStorage.getItem('deudores')) || [];
             deudores.splice(index, 1);
-            localStorage.setItem('deudores', JSON.stringify(deudores));
+            guardarDeudores(); 
             mostrarDeudores();
         }
     });
@@ -168,72 +124,112 @@ document.getElementById('agregar').addEventListener('click', () => {
     const nombre = document.getElementById('nombre').value;
     const edad = parseInt(document.getElementById('edad').value);
     const monto = parseFloat(document.getElementById('monto').value);
+    const fechaVencimiento = document.getElementById('fechaVencimiento').value; 
 
     if (editingIndex !== -1) {
-        if (nombre && edad >= 18 && edad <= 100 && monto >= 0) {
-            guardarCambios(nombre, edad, monto);
+        if (nombre && edad >= 18 && edad <= 100 && monto >= 0 && esFechaValida(fechaVencimiento)) {
+            guardarCambios(nombre, edad, monto, fechaVencimiento); 
             document.getElementById('nombre').value = '';
             document.getElementById('edad').value = '';
             document.getElementById('monto').value = '';
+            document.getElementById('fechaVencimiento').value = ''; 
         } else if (edad < 18 || edad > 100) {
-            Swal.fire({
-                title: 'Error',
-                text: 'La edad debe estar entre 18 y 100 años.',
-                icon: 'error',
-            });
+            mostrarError('La edad debe estar entre 18 y 100 años.');
         } else if (monto < 0) {
-            Swal.fire({
-                title: 'Error',
-                text: 'El monto no puede ser negativo.',
-                icon: 'error',
-            });
+            mostrarError('El monto no puede ser negativo.');
+        } else if (!esFechaValida(fechaVencimiento)) {
+            mostrarError('La fecha de vencimiento debe estar entre 2024 y 2030.');
         } else {
-            Swal.fire({
-                title: 'Error',
-                text: 'Por favor, completa todos los campos.',
-                icon: 'error',
-            });
+            mostrarError('Por favor, completa todos los campos.');
         }
-    } else if (verificarAcceso()) {
-        if (nombre && edad >= 18 && edad <= 100 && monto >= 0) {
-            agregarDeudor(nombre, edad, monto);
+    } else {
+        if (nombre && edad >= 18 && edad <= 100 && monto >= 0 && esFechaValida(fechaVencimiento)) {
+            agregarDeudor(nombre, edad, monto, fechaVencimiento); 
             document.getElementById('nombre').value = '';
             document.getElementById('edad').value = '';
             document.getElementById('monto').value = '';
+            document.getElementById('fechaVencimiento').value = '';
         } else if (edad < 18 || edad > 100) {
-            Swal.fire({
-                title: 'Error',
-                text: 'La edad debe estar entre 18 y 100 años.',
-                icon: 'error',
-            });
+            mostrarError('La edad debe estar entre 18 y 100 años.');
         } else if (monto < 0) {
-            Swal.fire({
-                title: 'Error',
-                text: 'El monto no puede ser negativo.',
-                icon: 'error',
-            });
+            mostrarError('El monto no puede ser negativo.');
+        } else if (!esFechaValida(fechaVencimiento)) {
+            mostrarError('La fecha de vencimiento debe estar entre 2024 y 2030.');
         } else {
-            Swal.fire({
-                title: 'Error',
-                text: 'Por favor, completa todos los campos.',
-                icon: 'error',
-            });
+            mostrarError('Por favor, completa todos los campos.');
         }
     }
 });
 
-// Mostrar la lista de deudores al cargar la página
-window.addEventListener('load', () => {
-    if (usuarioIniciado) {
-        mostrarFormulario();
-        mostrarDeudores();
-    }
+function esFechaValida(fecha) {
+    const fechaVencimiento = new Date(fecha);
+    const anio = fechaVencimiento.getFullYear();
+    return anio >= 2024 && anio <= 2030;
+}
+
+
+document.getElementById('ordenarNombre').addEventListener('click', () => {
+    deudores.sort((a, b) => (a.nombre > b.nombre ? 1 : -1));
+    mostrarDeudores();
 });
+
+document.getElementById('ordenarEdad').addEventListener('click', () => {
+    deudores.sort((a, b) => a.edad - b.edad);
+    mostrarDeudores();
+});
+
+document.getElementById('ordenarMonto').addEventListener('click', () => {
+    deudores.sort((a, b) => a.monto - b.monto);
+    mostrarDeudores();
+});
+
+document.getElementById('ordenarFechaVencimiento').addEventListener('click', () => {
+    deudores.sort((a, b) => {
+        const dateA = new Date(a.fechaVencimiento);
+        const dateB = new Date(b.fechaVencimiento);
+        return dateA - dateB;
+    });
+    mostrarDeudores();
+});
+
+function mostrarError(mensaje) {
+    Swal.fire({
+        title: 'Error',
+        text: mensaje,
+        icon: 'error',
+    });
+}
 
 fetch("https://jsonplaceholder.typicode.com/users")
-.then(Response => Response.json())
-.then(data => console.log(data))
-.catch(error => console.log(error))
+    .then(response => response.json())
+    .then(data => {
+        console.log(data); 
+        mostrarEmpresasRecomendadoras(data);
+    })
+    .catch(error => console.log(error));
+
+function mostrarEmpresasRecomendadoras(empresas) {
+    const tablaRecomendadoras = document.getElementById('tablaRecomendadoras');
+    const tbody = tablaRecomendadoras.querySelector('tbody');
+    tbody.innerHTML = '';
+
+    empresas.forEach(empresa => {
+        const tr = document.createElement('tr');
+
+        const tdNombre = document.createElement('td');
+        tdNombre.textContent = empresa.name;
+
+        const tdWebsite = document.createElement('td');
+        tdWebsite.textContent = empresa.website;
+
+        tr.appendChild(tdNombre);
+        tr.appendChild(tdWebsite);
+
+        tbody.appendChild(tr);
+    });
+}
+
+
 
 
 

@@ -4,15 +4,7 @@
 }
 body{
     font-family: 'Roboto', sans-serif !important;
-}
-
-#bienvenida {
-    font-size: 18px; 
-}
-
-#registro{
-    display: none;
-    font-size: 18px;
+   height: 1400px;
 }
 
 .elementosRegistro{
@@ -25,11 +17,12 @@ body{
     align-items: center;
     justify-content: center;
 }
-.btncontinuar{
+.botonAgregar{
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 40px;
+    margin-top: 20px;
+    margin-bottom: 40px;
 }
 .hero{
     background-color: rgb(132, 155, 217);
@@ -42,15 +35,39 @@ body{
     height: 120px;
     text-shadow: rgb(44, 44, 44) 0.1em 0.1em 0.2em;
 }
+#filtroOrden{
+display: flex;
+align-items: center;
+justify-content: center;
+}
 
-#listaDeudores{
+.tablaDeDeudores{
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     margin-top: 40px;
     list-style-type: none;
 }
+
+
 button{
     margin-left: 8px;
 }
 input{
     margin: 15px;
+}
+
+.tablaDeRecomendadoras{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+h3, h2{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+    margin-bottom: 50px;
 }
